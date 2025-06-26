@@ -1,0 +1,304 @@
+<br>
+<br><br><br><br>
+<div class=" container-fluid">
+  <div class=" row">
+    <div class=" col">
+      <form [formGroup]="AddFileInwardForm">
+        <div class="card px-4 py-2">
+          <div class="form-row">
+            <div class="col-md-4 mb-3">
+              <label class="form-control-label" for="BatchID">Request Number</label>
+              <div class="">
+                <input name="appl" type="text" readonly placeholder="Document Type" type="text"
+                  class="form-control form-control-md" formControlName="request_number"
+                  [ngClass]="{'is-invalid': FormControls['request_number'].invalid && (FormControls['request_number'].touched || submitted)}" />
+                <div
+                  *ngIf="FormControls['request_number'].invalid && (FormControls['request_number'].touched || submitted)"
+                  class="invalid-feedback">
+                  <div *ngIf="FormControls['request_number'].hasError('required')">* Carton No is required.
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-control-label" for="BatchID">Item Code</label>
+              <div class="">
+                <select class="form-control" formControlName="item_code"
+                  [ngClass]="{'is-invalid': FormControls['item_code'].invalid && (FormControls['item_code'].touched || submitted)}"
+                  [hidden]="formattedData.length!=0">
+
+                  <option value="" disabled selected>--Select--</option>
+                  <option value="Container">Container</option>
+                  <option value="File">File</option>
+
+
+
+                </select>
+                <input name="appl" type="text" readonly placeholder="Document Type" type="text"
+                  class="form-control form-control-md" formControlName="item_code"
+                  [ngClass]="{'is-invalid': FormControls['item_code'].invalid && (FormControls['item_code'].touched || submitted)}"
+                  [hidden]="formattedData.length==0" />
+
+                <div *ngIf="FormControls['item_code'].invalid && (FormControls['item_code'].touched || submitted)"
+                  class="invalid-feedback">
+                  <div *ngIf="FormControls['item_code'].hasError('required')">* Item Code is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label class="form-control-label" for="BatchID">RETRIEVALType</label>
+              <div class="">
+                <select name="Courier" class="form-control" formControlName="retrival_type"
+                  [ngClass]="{'is-invalid': FormControls['retrival_type'].invalid && (FormControls['retrival_type'].touched || submitted)}"
+                  [hidden]="formattedData.length!=0" (change)="GetDeliveryType()">
+
+                  <option value="" disabled>--Select--</option>
+                  <option value="Delivery">Delivery</option>
+                  <option value="Access">Access</option>
+                  <option value="Permout">Permout</option>
+                  <option value="Destruction">Destruction</option>
+                  <option value="Permout Delivery">Permout Delivery</option>
+                </select>
+                <input name="appl" type="text" readonly placeholder="Document Type" type="text"
+                  class="form-control form-control-md" formControlName="retrival_type"
+                  [ngClass]="{'is-invalid': FormControls['retrival_type'].invalid && (FormControls['retrival_type'].touched || submitted)}"
+                  [hidden]="formattedData.length==0" />
+
+                <div
+                  *ngIf="FormControls['retrival_type'].invalid && (FormControls['retrival_type'].touched || submitted)"
+                  class="invalid-feedback">
+                  <div *ngIf="FormControls['retrival_type'].hasError('required')">* RETRIEVALType is required.
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4 mb-3" [hidden]="AddFileInwardForm.get('retrival_type').value=='Destruction'">
+              <label class="form-control-label" for="BatchID">Delivery Type</label>
+              <div class="">
+                <select name="Courier" class="form-control" formControlName="delivery_type"
+                  [ngClass]="{'is-invalid': FormControls['delivery_type'].invalid && (FormControls['delivery_type'].touched || submitted)}"
+                  [hidden]="formattedData.length!=0 || AddFileInwardForm.get('retrival_type').value=='Access'">
+                  <option value="" disabled>--Select--</option>
+                  <option value="Normal">Normal</option>
+                  <option value="Express">Express</option>
+                  <option value="Emergency">Emergency</option>
+                </select>
+                <select name="Courier" class="form-control" formControlName="delivery_type"
+                  [ngClass]="{'is-invalid': FormControls['delivery_type'].invalid && (FormControls['delivery_type'].touched || submitted)}"
+                  [hidden]="formattedData.length!=0 || AddFileInwardForm.get('retrival_type').value !='Access'">
+                  <option value="" disabled>--Select--</option>
+                  <option value="SOD">SOD</option>
+                  <option value="Physical">Physical</option>
+                </select>
+                <input name="appl" type="text" readonly placeholder="Document Type" type="text"
+                  class="form-control form-control-md" formControlName="delivery_type"
+                  [ngClass]="{'is-invalid': FormControls['delivery_type'].invalid && (FormControls['delivery_type'].touched || submitted)}"
+                  [hidden]="formattedData.length==0" />
+                <div
+                  *ngIf="FormControls['delivery_type'].invalid && (FormControls['delivery_type'].touched || submitted)"
+                  class="invalid-feedback">
+                  <div *ngIf="FormControls['delivery_type'].hasError('required')">* Delivery Type is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-control-label" for="BatchID">RETRIEVALReason</label>
+              <div class="">
+                <select name="Courier" class="form-control" formControlName="retrieval_reason"
+                  [ngClass]="{'is-invalid': FormControls['retrieval_reason'].invalid && (FormControls['retrieval_reason'].touched || submitted)}"
+                  [hidden]="formattedData.length!=0">
+
+                  <option value="" disabled>--Select--</option>
+                  <option value="Foreclosure">Foreclosure</option>
+                  <option value="Loan Closure">Loan Closure</option>
+                  <option value="Internal Audit">Internal Audit</option>
+                  <option value="Concurrent Audit">Concurrent Audit</option>
+                  <option value="RBI Audit">RBI Audit</option>
+                  <option value="Additional Loan">Additional Loan</option>
+                  <option value="DD - CLM">DD - CLM</option>
+                  <option value="DD - DA">DD - DA</option>
+                  <option value="Collection">Collection</option>
+                  <option value="Legal">Legal</option>
+                  <option value="Customer Request">Customer Request</option>
+                  <!-- <option value="Permont">Scan Request</option> -->
+                  <option value="Any Other -Specify">Any Other -Specify</option>
+
+                </select>
+                <input name="appl" type="text" readonly placeholder="Document Type" type="text"
+                  class="form-control form-control-md" formControlName="retrieval_reason"
+                  [ngClass]="{'is-invalid': FormControls['retrieval_reason'].invalid && (FormControls['retrieval_reason'].touched || submitted)}"
+                  [hidden]="formattedData.length==0" />
+
+                <div
+                  *ngIf="FormControls['retrieval_reason'].invalid && (FormControls['retrieval_reason'].touched || submitted)"
+                  class="invalid-feedback">
+                  <div *ngIf="FormControls['retrieval_reason'].hasError('required')">* RETRIEVALReason is required.
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-control-label" for="BatchID">Item Number</label>
+              <div class="">
+                <input name="appl" type="text" formControlName="item_number" placeholder="Item Number" type="text"
+                  class="form-control form-control-md"
+                  [ngClass]="{'is-invalid': FormControls['item_number'].invalid && (FormControls['item_number'].touched || submitted)}" />
+                <div *ngIf="FormControls['item_number'].invalid && (FormControls['item_number'].touched || submitted)"
+                  class="invalid-feedback">
+                  <div *ngIf="FormControls['item_number'].hasError('required')">* Item Number is required.</div>
+                  <div *ngIf="FormControls['item_number'].hasError('hasSpace')">* Item Number must not contain spaces.
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-control-label" for="BatchID">Remark</label>
+              <div class="">
+                <textarea name="appl" type="text" formControlName="remark" placeholder="Remark" type="text"
+                  class="form-control form-control-md"
+                  [ngClass]="{'is-invalid': FormControls['remark'].invalid && (FormControls['remark'].touched || submitted)}"></textarea>
+                <div *ngIf="FormControls['remark'].invalid && (FormControls['remark'].touched || submitted)"
+                  class="invalid-feedback">
+                  <div *ngIf="FormControls['remark'].hasError('required')">* Remark is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="w-100">
+            <div class="d-flex justify-content-end align-items-end">
+              <button type="button" class="btn btn-success" [disabled]="AddFileInwardForm.invalid"
+                (click)="SaveData()">Save</button>
+              <button class="btn btn-primary" style="background-color: #f3c110;border-color: #f3c110;" type="button"
+                (click)="onBack()">Back</button>
+              <button type="button" class="btn btn-primary" (click)="OnReset()">Reset</button>
+              <button class="btn btn-primary" type="button" style="background-color: #2f00ff;border-color: #0400ff;"
+                (click)="CloseRequest(AddressFormPopup)" [disabled]="formattedData.length==0">Close
+                Request</button>
+              <button type="button" class="btn btn-danger" (click)="openPopup(BranchFormPopup)">Bulk Request &nbsp;<i class="fa-solid fa-upload"></i></button>
+              <!-- [disabled]="formattedData.length!=0" -->
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<p-table [paginator]="true" [rows]="10" [value]="formattedData" [autoLayout]="true" [showCurrentPageReport]="true"
+  [rowsPerPageOptions]="[10,25,50,100]" [(first)]="first" (onPage)="paginate($event)" [loading]="loading"
+  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+  <ng-template pTemplate="caption">
+    
+    <input type="text" pInputText size="50" class="form-control" placeholder="Search records"
+      (input)="searchTable($event)" class="global-search search">
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <th *ngFor="let col of headerList; let i = index;" [ngStyle]="i==0 && {'width': '5%'}">
+        {{col.header}}
+      </th>
+
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-car let-rowIndex="rowIndex">
+    <tr>
+      <td *ngFor="let col of headerList">
+        {{car[col.field]}}
+      </td>
+
+    </tr>
+  </ng-template>
+</p-table>
+
+<ng-template #BranchFormPopup let-c="close" let-d="dismiss" let-modal>
+  <div class="modal-content">
+    <div class="modal-body p-0">
+      <div class=" card">
+        <div class=" card-header">
+          <h3 class=" mb-0">Bulk Upload</h3>
+        </div>
+
+        <div class="card-body">
+          <form>
+            <div class="row">
+              <div class="col">
+                <div class="form-group pt-2">
+                  <input type="file" class="form-control form-control-sm bg-light" name="csvReader" id="csvReader"
+                    (change)="uploadListener($event)" accept=".csv">
+                  <span class="selected-file-name"></span>
+                </div>
+              </div>
+              <div class="col d-flex justify-content-center align-items-start pt-2"><button
+                  class="btn btn-danger btn-sm" (click)="downloadFile()">Download Csv Format</button></div>
+            </div>
+            <br>
+            <br>
+            <div class="d-flex align-items-end justify-content-end">
+              <button class="btn btn-primary" type="submit" (click)="upload()">
+                Upload
+              </button>
+              <button type="button" class="btn btn-warning" (click)="OnReset()">Close</button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+
+
+<ng-template #AddressFormPopup let-c="close" let-d="dismiss" let-modal>
+  <div class="modal-content">
+    <div class="modal-body p-0">
+      <div class=" card">
+        <div class=" card-header">
+          <h3 class=" mb-0">Dispatch Address</h3>
+        </div>
+
+        <div class="card-body">
+          <form [formGroup]="dispatchForm">
+            <div class="col">
+
+              <div class="form-group pt-2">
+
+                <textarea type="text" class="form-control" formControlName="dispatch_address"
+                  placeholder="Dispatch Address"
+                  [ngClass]="{'is-invalid': FormControlss['dispatch_address'].invalid && (FormControlss['dispatch_address'].touched || submitteds)}">
+                        </textarea>
+                <div
+                  *ngIf="FormControlss['dispatch_address'].invalid && (FormControlss['dispatch_address'].touched || submitteds)"
+                  class="invalid-feedback">
+                  <div *ngIf="FormControlss['dispatch_address'].hasError('required')">* Address is required.</div>
+                  <div *ngIf="FormControlss['dispatch_address'].hasError('noWhitespace')">* Address cannot be empty or
+                    just spaces.</div>
+                </div>
+              </div>
+
+
+            </div>
+            <br>
+            <br>
+            <div class="d-flex align-items-end justify-content-end">
+              <button class="btn btn-primary" type="submit" [disabled]="dispatchForm.invalid" (click)="uploads()">
+                Close Request
+              </button>
+              <button type="button" class="btn btn-warning" (click)="OnReset()">Close</button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

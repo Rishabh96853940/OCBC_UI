@@ -1,0 +1,107 @@
+<div class="DataEntryMainContainer">
+  <div class="header pb-6">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-4">
+          <div class="col-lg-6 col-7">
+            <!-- <h6 class="h2 text-white d-inline-block mb-0">REPORT</h6> -->
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                  <a href="javascript:void(0)">
+                    <i class="fas fa-home" routerLink="/search/quick-search">
+                    </i>
+                  </a>
+                </li>
+
+                <li class="breadcrumb-item">
+                  <a href="javascript:void(0)"> Report </a>
+                </li>
+
+                <li aria-current="page" class="breadcrumb-item active">
+                  Item status Report
+                </li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid mt--6">
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <div class="card-header">
+          <form [formGroup]="RefillingReportForm">
+            <div class="row">
+              <div class="col-md-2 d-flex align-items-center">
+                <label for="DATEFROM" class="form-control-label mb-0 mr-2" style="white-space: nowrap;">
+                  From Date
+                </label>
+                <input type="text" formControlName="DATEFROM" placeholder="Select From Date" class="form-control"
+                  bsDatepicker [bsConfig]="{
+          isAnimated: true,
+          containerClass: 'theme-red'
+        }" [maxDate]="maxFromDate || maxDate" [bsValue]="bsValue" (bsValueChange)="onFromDateChange($event)" />
+              </div>
+
+              <div class="col-md-2 d-flex align-items-center">
+                <label for="DATETO" class="form-control-label mb-0 mr-2" style="white-space: nowrap;">
+                  To Date
+                </label>
+                <input type="text" formControlName="DATETO" placeholder="Select To Date" class="form-control"
+                  bsDatepicker [bsConfig]="{
+          isAnimated: true,
+          containerClass: 'theme-red'
+        }" [minDate]="minToDate" [maxDate]="maxDate" [bsValue]="bsValue" (bsValueChange)="onToDateChange($event)" />
+              </div>
+
+              <div class="col-auto">
+                <button class="btn btn-primary" style="border: none; color: #fff; opacity: 1"
+                  (click)="GetItemstatusreportList()">
+                  Search
+                </button>
+              </div>
+              <div class="col-2">
+                <button type="button" class="btn btn-warning" style="font-size: 13px" (click)="downloadFile()">
+                  Download CSV <i class=" fas fa-file-download"></i>
+                </button>
+              </div>
+              <!-- </div> -->
+            </div>
+          </form>
+        </div>
+
+        <div class="dataTables_wrapper py-4 checklist-table">
+          <p-table [paginator]="true" [rows]="10" [value]="formattedData" [autoLayout]="true"
+            [showCurrentPageReport]="true" [rowsPerPageOptions]="[10, 25, 50, 100]" [(first)]="first"
+            (onPage)="paginate($event)" [loading]="loading" style="text-wrap: nowrap;"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+            <ng-template pTemplate="caption">
+              <i class="pi pi-search" style="margin: 4px 4px 0 0"></i>
+              <input type="text" pInputText size="50" class="form-control" placeholder="Search records"
+                (input)="searchTable($event)" class="global-search search" />
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th *ngFor="let col of headerList; let i = index" [ngStyle]="i == 0 && { width: '5%' }">
+                  {{ col.header }}
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-car let-rowIndex="rowIndex">
+              <tr>
+                <td *ngFor="let col of headerList">
+                  {{ car[col.field] }}
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

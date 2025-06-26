@@ -1,0 +1,271 @@
+<div class="header pb-6">
+  <div class=" container-fluid">
+    <div class=" header-body">
+      <div class=" row align-items-center py-4">
+        <div class=" col-lg-6 col-7">
+          <!-- <h6 class=" h2 text-white d-inline-block mb-0">Email Notifications</h6> -->
+
+          <nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
+            <ol class=" breadcrumb">
+              <li class=" breadcrumb-item">
+                <a href="javascript:void(0)"> <i class=" fas fa-home" routerLink="/search/quick-search"> </i> </a>
+              </li>
+
+              <li class=" breadcrumb-item">
+                <a href="javascript:void(0)"> Email Notifications </a>
+              </li>
+
+              <li aria-current="page" class=" breadcrumb-item active">
+
+              </li>
+            </ol>
+          </nav>
+        </div>
+
+        <div class=" col-lg-6 col-5 text-right">
+          <a class=" btn btn-sm btn-neutral" (click)="addBranch(BranchFormPopup)">Add NEW</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class=" container-fluid mt--6">
+  <div class=" row">
+    <div class=" col">
+      <div class=" card">
+        <div class=" card-header">
+          <h3 class=" mb-0"></h3>
+          <p class=" text-sm mb-0"></p>
+        </div>
+        <div class="dataTables_wrapper checklist-table w-100">
+
+          <p-table [paginator]="true" [rows]="10" [value]="formattedData" [autoLayout]="true"
+            [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50,100]" [(first)]="first"
+            (onPage)="paginate($event)" [loading]="loading"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+            <ng-template pTemplate="caption">
+              
+              <input type="text" pInputText size="50" placeholder="Search records" (input)="searchTable($event)"
+                class="global-search search">
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+
+                <th *ngFor="let col of headerList; let i = index;" [ngStyle]="i==0 && {'width': '5%'}">
+                  {{col.header}}
+                  <p-sortIcon *ngIf="i==10" [field]="col.field"></p-sortIcon>
+                </th>
+                <th style="width: 10%;">
+                  ACTION
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-car let-rowIndex="rowIndex">
+              <tr>
+
+                <td *ngFor="let col of headerList">
+                  {{car[col.field]}}
+                </td>
+                <td>
+                  <button type="button" style="padding:0 0 5px 4px" class="btn btn-icon btn-icon-only"
+                    (click)="editBranch(BranchFormPopup,car)">
+                    <span class="btn-inner--icon"><i class="fa fa-pen"></i></span>
+                  </button>
+                  <button type="button" style="padding:0 0 5px 1px" class="btn btn-icon btn-icon-only"
+                    (click)="deleteBrnach(car.id)">
+                    <span class="btn-inner--icon"><img src="assets/img/icons/delete.svg"></span>
+                  </button>
+
+                </td>
+
+
+
+
+
+              </tr>
+            </ng-template>
+          </p-table>
+
+
+        </div>
+
+        <!-- <div class="dataTables_wrapper py-4">
+            <div class="row">
+              <div class="col-sm-12 col-md-6">
+                <div class="dataTables_length" id="datatable_length">
+                  <label>
+                    Show
+                    <select
+                      name="datatable_length"
+                      aria-controls="datatable"
+                      class="form-control form-control-sm"
+                      (change)="entriesChange($event)"
+                    >
+                      <option value="10" [selected]="entries == 10">10</option>
+                      <option value="25" [selected]="entries == 25">25</option>
+                      <option value="50" [selected]="entries == 50">50</option>
+                      <option value="-1" [selected]="entries == -1">All</option>
+                    </select>
+                    entries
+                  </label>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-6">
+                <div id="datatable_filter" class="dataTables_filter">
+                  <label>
+                    <input
+                      type="search"
+                      class="form-control form-control-sm"
+                      placeholder="Search records"
+                      aria-controls="datatable"
+                      (keyup)="filterTable($event)"
+                    />
+                  </label>
+                </div>
+              </div>
+            </div>
+  
+            <ngx-datatable
+            *ngIf="_FilteredList"
+              class="material"
+              [columnMode]="'force'"
+              [headerHeight]="50"
+              [footerHeight]="50"
+              [rowHeight]="'auto'"
+              [limit]="entries != -1 ? entries : undefined"
+              [rows]="_FilteredList"
+              (activate)="onActivate($event)"
+            >
+              <ngx-datatable-column name="SrNo">
+                <ng-template let-rowIndex="rowIndex" ngx-datatable-cell-template>{{rowIndex+1}}</ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Branch">
+                <ng-template let-row="row" ngx-datatable-cell-template>{{row.BranchName}}</ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Cabinet">
+                <ng-template let-row="row" ngx-datatable-cell-template>{{row.DepartmentName}}</ng-template>
+              </ngx-datatable-column>
+              
+              <ngx-datatable-column name="Action" sortable="false" prop="id">
+                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  <button type="button" style="padding:0 0 5px 4px" class="btn btn-icon btn-warning btn-icon-only rounded-circle" (click)="editBranch(BranchFormPopup,row)">
+                    <span class="btn-inner--icon"><i class="fa fa-edit"></i></span>
+                  </button>
+                  <button type="button" style="padding:0 0 5px 1px" class="btn btn-icon btn-icon-only rounded-circle" (click)="deleteBrnach(value)">
+                    <span class="btn-inner--icon"><img src="assets/img/icons/delete.svg"></span>
+                  </button>
+            </ng-template>
+              </ngx-datatable-column>
+            </ngx-datatable>
+          </div> -->
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #BranchFormPopup let-c="close" let-d="dismiss" let-modal>
+  <div class="modal-content">
+    <div class="modal-body p-0">
+      <div class=" card">
+        <div class=" card-header">
+          <h3 class=" mb-0">{{Formtext}}</h3>
+        </div>
+
+        <div class="card-body">
+          <form [formGroup]="AddBranchForm" (ngSubmit)="onSubmit()">
+            <div class="form-row">
+              <div class="form-group col-md-12 mb-3">
+                <label class="form-control-label" for="Branch">
+                  Branch Code
+                </label>
+                <select class="form-select" formControlName="branch_id" (change)="ShowAddress($event.target.value)"
+                  [ngClass]="{'is-invalid': FormControls['branch_id'].invalid && (FormControls['branch_id'].touched || submitted)}">
+                  <option value="" selected disabled>--Select--</option>
+                  <option *ngFor="let data of AllBranch;let i=index" (click)="ShowAddress(i)" value={{data.id}}>
+                    {{data.branch_name}}</option>
+                </select>
+                <div *ngIf="FormControls['branch_id'].invalid && (FormControls['branch_id'].touched || submitted)"
+                  class="invalid-feedback">
+                  <div *ngIf="FormControls['branch_id'].hasError('required')">* Branch is required.</div>
+                </div>
+              </div>
+              <div class="form-group col-md-12 mb-3" *ngIf="currentAddress">
+                <label class="form-control-label" for="Branch">
+                  Address
+                </label>
+                <textarea name="" id="" cols="30" rows="3" class="form-control" [value]="currentAddress"
+                  readonly></textarea>
+              </div>
+              <div class="form-group col-md-12 mb-3">
+                <label class="form-control-label" for="Branch">
+                  Service Type
+                </label>
+                <select class="form-select form-select-lg" formControlName="service_type" placeholder="Service Type"
+                  style="font-weight: 300; font-size: 15px;" type="text"
+                  [ngClass]="{'is-invalid': FormControls['service_type'].invalid && (FormControls['service_type'].touched || submitted)}">
+                  <option value="" selected disabled>--Select--</option>
+                  <option value="Pickup Request Raise">Pickup Request Raise</option>
+                  <option value="Pickup Request Accept by Crown">Pickup Request Accept by Crown</option>
+                  <option value="Schedule Pickup by Crown">Schedule Pickup by Crown</option>
+                  <option value="Retrieval Request by Avanse" >Retrieval Request by Avanse</option>
+                  <option value="Request Approve by Approver User">Request Approve by Approver User</option>
+                  <option value="File Dispatch">File Dispatch</option>
+                  <option value="Refilling Request by Avanse">Refilling Request by Avanse</option>
+                  <option value="Refilling Request schedule by Crown">Refilling Request schedule by Crown</option>
+                </select>
+                <div *ngIf="FormControls['service_type'].invalid && (FormControls['service_type'].touched || submitted)"
+                  class="invalid-feedback">
+                  <div *ngIf="FormControls['service_type'].hasError('required')">* Service Type is required.</div>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-control-label" for="Branch">
+                  CC
+                </label>
+                <input class="form-control" id="BranchName" formControlName="cc_email_id" placeholder="Name"
+                  type="email"
+                  [ngClass]="{'is-invalid': FormControls['cc_email_id'].invalid && (FormControls['cc_email_id'].touched || submitted)}" />
+
+                <div *ngIf="FormControls['cc_email_id'].invalid && (FormControls['cc_email_id'].touched || submitted)"
+                  class="invalid-feedback">
+                  <div *ngIf="FormControls['cc_email_id'].hasError('required')">* Email is required.</div>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-control-label" for="Branch">
+                  Subject
+                </label>
+                <input class="form-control" formControlName="subject" placeholder="CC" type="text"
+                  [ngClass]="{'is-invalid': FormControls['subject'].invalid && (FormControls['subject'].touched || submitted)}" />
+
+                <div *ngIf="FormControls['subject'].invalid && (FormControls['subject'].touched || submitted)"
+                  class="invalid-feedback">
+                  <div *ngIf="FormControls['subject'].hasError('required')">* Subject is required.</div>
+                </div>
+              </div>
+              <div class="col-md-12 mb-3">
+                <label class="form-control-label" for="Branch">
+                  Body
+                </label>
+
+                <textarea class="form-control" id="BranchName" formControlName="body" placeholder="Name" type="text"
+                  id="" cols="30" rows="3"></textarea>
+
+              </div>
+
+
+            </div>
+            <button class=" btn btn-primary" type="submit">
+              Submit
+            </button>
+            <button type="button" class="btn btn-warning" (click)="OnReset()">Close</button>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

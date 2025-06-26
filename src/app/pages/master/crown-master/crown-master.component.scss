@@ -1,0 +1,4 @@
+::ng-deep .custom-ng-select .ng-dropdown-panel {
+  max-height: 150px !important; /* Set fixed dropdown height */
+  overflow-y: auto !important;
+}

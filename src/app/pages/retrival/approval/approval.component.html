@@ -1,0 +1,247 @@
+<div class="DataEntryMainContainer">
+  <div class="header pb-6">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-4">
+          <div class="col-lg-6 col-7">
+            <!-- <h6 class="h2 text-white d-inline-block mb-0">Request Approval</h6> -->
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                  <a href="javascript:void(0)"> <i class="fas fa-home" routerLink="/search/quick-search"> </i> </a>
+                </li>
+
+                <li class="breadcrumb-item">
+                  <a href="javascript:void(0)"> Process </a>
+                </li>
+
+                <li aria-current="page" class="breadcrumb-item active">
+                  Request Approval
+                </li>
+              </ol>
+            </nav>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class=" container-fluid mt--6">
+  <div class=" row">
+    <div class=" col">
+      <div class=" card">
+        <div class=" card-header">
+          <div class="row">
+            <div class="col-md-6">
+              <h3 class=" mb-0">All Approval</h3>
+              <p class=" text-sm mb-0"></p>
+            </div>
+            <div class="col-md-6 d-flex justify-content-end">
+              <!-- <button type="button" class="btn bg-success h3 px-4 py-2" style="color: white;"
+                  (click)="Add(InwardFormPopup)">
+                  <i class="fa fa-plus"></i>&nbsp;Add New
+                </button> -->
+            </div>
+          </div>
+        </div>
+
+        <div class="dataTables_wrapper py-4 checklist-table">
+
+
+          <p-table [paginator]="true" [rows]="10" [value]="formattedData" [autoLayout]="true"
+            [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50,100]" [(first)]="first"
+            (onPage)="paginate($event)" [loading]="loading"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+            <ng-template pTemplate="caption">
+              
+              <input type="text" pInputText size="50" class="form-control" placeholder="Search records"
+                (input)="searchTable($event)" class="global-search search">
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th *ngFor="let col of headerList; let i = index;" [ngStyle]="i==0 && {'width': '5%'}">
+                  {{col.header}}
+                </th>
+                <th style="width: 10%;">
+                  ACTION
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-car let-rowIndex="rowIndex">
+              <tr>
+                <td *ngFor="let col of headerList">
+                  {{car[col.field]}}
+                </td>
+                <td>
+
+                  <button type="button" style="padding:0 0 5px 4px" class="btn text-primary h3"
+                    (click)="Editinward(InwardFormPopup,car)">
+                    <i class="fa fa-edit"></i>
+                  </button>
+                  <!-- <button type="button" style="padding:0 0 5px 4px" class="btn text-success h3"
+                    (click)="Editinward1(secondInwardFormPopup,car)">
+                      <i class="fa fa-eye"></i>
+                    </button> -->
+                  <!-- <button type="button" style="padding:0 0 5px 4px" class="btn text-danger h3"
+                    (click)="Editinward2(car)">
+                      <i class="fa fa-cloud-download"></i>
+                    </button> -->
+
+
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #InwardFormPopup let-c="close" let-d="dismiss" let-modal>
+
+  <div class="modal-content">
+    <div class="modal-body p-0">
+      <div class="pt-2 pl-3">
+        <div class="resetsave float-right">
+          <i class="fa fa-times fa-lg" (click)="hidepopup()" style="text-align: right;margin-right: 35px;"></i> 
+        </div>
+        <h2 style="border-bottom: 1px solid black;">Request Approval</h2>
+      </div>
+
+      <div class="m-2 p-3">
+        <form [formGroup]="pickupForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="main_file_count">Request Number</label>
+                <input formControlName="request_id" type="text" class="form-control" placeholder="Request Number"
+                  readonly
+                  [ngClass]="{'is-invalid': PickupControls['request_id'].invalid && (PickupControls['request_id'].touched || submitted)}">
+
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="main_file_count">Dispatch Address</label>
+                <input formControlName="dispatch_address" type="text" class="form-control" placeholder="Request Number"
+                  readonly
+                  [ngClass]="{'is-invalid': PickupControls['dispatch_address'].invalid && (PickupControls['dispatch_address'].touched || submitted)}">
+
+              </div>
+            </div>
+
+          </div>
+
+          <div class="form-group">
+            <label for="collateral_file_count">Remark</label>
+            <textarea name="" id="" cols="30" rows="2" class="form-control" formControlName="remark"></textarea>
+          </div>
+          <div>
+            <p-table [paginator]="true" [rows]="10" [value]="formattedData1" [autoLayout]="true"
+              [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50,100]" [(first)]="first1"
+              (onPage)="paginate1($event)" [loading]="loading1"
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+              <ng-template pTemplate="caption">
+                
+                <input type="text" pInputText size="50" class="form-control" placeholder="Search records"
+                  (input)="searchTable1($event)" class="global-search search">
+              </ng-template>
+              <ng-template pTemplate="header">
+                <tr>
+                  <th *ngFor="let col of headerList1; let i = index;" [ngStyle]="i==0 && {'width': '5%'}">
+                    {{col.header}}
+                  </th>
+                  <!-- <th style="width: 10%;">
+                    ACTION
+                  </th> -->
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-car let-rowIndex="rowIndex">
+                <tr>
+                  <td *ngFor="let col of headerList1">
+                    {{car[col.field]}}
+                  </td>
+
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+
+
+          <div class="d-flex justify-content-end py-2">
+            <button type="button" style="padding:0 0 5px 4px" class="btn btn-sm text-success"
+              style="background-color:white; border:1px solid black" (click)="onUpdatestatus('Approval','')">
+              Approve &nbsp;<i class="fa fa-check"></i>
+            </button>
+            <!-- <button type="button" style="padding:0 0 5px 4px" class="btn btn-sm  text-primary " style="background-color:white; border:1px solid black"
+                    (click)="onUpdatestatus('Hold','')">
+                      Pause &nbsp;<i class="fa fa-pause"></i>
+                    </button> -->
+            <button type="button" style="padding:0 0 5px 4px" class="btn  btn-sm  text-danger"
+              style="background-color:white; border:1px solid black" (click)="onUpdatestatus('Reject','')">
+              Reject &nbsp;<i class="fa fa-ban"></i>
+            </button>
+          </div>
+        </form>
+
+      </div>
+
+
+
+
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template #secondInwardFormPopup let-c="close" let-d="dismiss" let-modal>
+
+  <div class="modal-content">
+    <div class="modal-body p-0">
+      <div class="pt-2 pl-3">
+        <h2 style="border-bottom: 1px solid black;">RETRIEVALdetails</h2>
+      </div>
+
+      <div class="m-2 p-3">
+        <div>
+          <p-table [paginator]="true" [rows]="10" [value]="formattedData1" [autoLayout]="true"
+            [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50,100]" [(first)]="first1"
+            (onPage)="paginate1($event)" [loading]="loading"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+            <ng-template pTemplate="caption">
+              
+              <input type="text" pInputText size="50" class="form-control" placeholder="Search records"
+                (input)="searchTable($event)" class="global-search search">
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th *ngFor="let col of headerList; let i = index;" [ngStyle]="i==0 && {'width': '5%'}">
+                  {{col.header}}
+                </th>
+                <!-- <th style="width: 10%;">
+                    ACTION
+                  </th> -->
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-car let-rowIndex="rowIndex">
+              <tr>
+                <td *ngFor="let col of headerList">
+                  {{car[col.field]}}
+                </td>
+
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+
+      </div>
+
+
+
+
+    </div>
+  </div>
+</ng-template>

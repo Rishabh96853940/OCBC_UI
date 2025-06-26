@@ -1,0 +1,312 @@
+<div class="header pb-6">
+  <div class="header-body">
+    <div class="align-items-center py-4">
+      <div class="dashboard">
+        <h2>Dashboard</h2>
+        <div class="well">
+          <ul class="nav nav-tabs" role="tablist">
+            <li>
+              <a href="#dmsStatistics" class="active" data-toggle="tab">Pickup Request</a>
+            </li>
+            <li><a href="#documentControl" data-toggle="tab">Retrieval</a></li>
+          </ul>
+          <div id="myTabContent" class="tab-content">
+            <div class="tab-pane active in" id="dmsStatistics">
+              <!--  -->
+              <div class="row d-flex align-items-center">
+                <!-- Period Dropdown -->
+                <div class="col-md-2">
+                  <div class="box_heanding">
+                    <select [(ngModel)]="selectedPeriod" placeholder="Select" (change)="FilterData($event.target.value)"
+                      class="form-control" style="box-shadow: none; font-size: 10px;">
+                      <!-- <option value="">Select a period</option> -->
+                      <option *ngFor="let option of periodOptions" [value]="option.value" style="border-radius: 20px;">
+                        {{ option.label }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-md-6 d-flex align-items-center">
+                  <!-- Date Picker Form -->
+                  <form [formGroup]="ContentSearchForm" class="form-row d-flex align-items-center">
+                    <!-- From Date -->
+                    <div class="col-md-4">
+                      <input type="text" formControlName="fromdate" placeholder="From Date" class="form-control"
+                        bsDatepicker [bsConfig]="{ isAnimated: true, containerClass: 'theme-red' }"
+                        [maxDate]="currentDate" [readOnly]="!dateselection"
+                        style="box-shadow: none !important; box-shadow: none; font-size: 11px;" />
+                    </div>
+
+                    <!-- To Date -->
+                    <div class="col-md-4">
+                      <input type="text" formControlName="todate" placeholder="To Date" class="form-control"
+                        bsDatepicker [bsConfig]="{ isAnimated: true, containerClass: 'theme-red' }"
+                        [minDate]="ContentSearchForm.get('fromdate')?.value" [maxDate]="currentDate"
+                        [readOnly]="!dateselection"
+                        style="box-shadow: none !important; box-shadow: none; box-shadow: inset; font-size: 11px;" />
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="col-md-3 d-flex">
+                      <button class="btn btn-primary" title="Search" [disabled]="!dateselection" (click)="searchData()">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                      </button>
+                      <button class="btn btn-primary" title="Refresh" (click)="refreshPage()">
+                        Refresh
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="box">
+                    <div class="heading blue_box">Pickup Request Status</div>
+                    <div class="box_cantent">
+                      <p (click)="OpenData(1, InwardFormPopup)">
+                        # of Request <span>{{ data1 }}</span>
+                      </p>
+                      <p (click)="OpenData(2, InwardFormPopup)">
+                        # of Scheduled <span>{{ data2 }}</span>
+                      </p>
+                      <p (click)="OpenData(2, InwardFormPopup)">
+                        # of Scheduled Pending<span>{{ SchedulePending }}</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="box">
+                    <div class="heading yellow_box">Inventory Request Status</div>
+                    <div class="box_cantent">
+                      <p (click)="OpenData(3, InwardFormPopup)">
+                        # Inventory Request Done<span>{{ data4 }}</span>
+                      </p>
+                      <p (click)="OpenData(4, InwardFormPopup)">
+                        # Inventory Request Pending <span>{{ data3 }}</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="box">
+                    <div class="heading" style="background-color: green;">File Inventory Status</div>
+                    <div class="box_cantent">
+                      <p (click)="OpenData(5, InwardFormPopup)">
+                        # File Inventory Done<span>{{ data14 }}</span>
+                      </p>
+                      <p (click)="OpenData(6, InwardFormPopup)">
+                        # File Inventory Pending <span>{{ data17 }}</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="card">
+                    <h3>Pickup Status</h3>
+                    <div id="DumpStatusChart"></div>
+                  </div>
+                </div>
+
+                <!-- <div class="col-md-6">
+                  <div class="card">
+                    <h3>Inventory Request Status</h3>
+                    <div id="courierInwardChart"></div>
+                  </div>
+                </div> -->
+
+                <div class="col-md-6">
+                  <div class="card">
+                    <h3>File Status</h3>
+                    <div id="courierInwardChart1"></div>
+                  </div>
+                </div>
+                <div class="col-md-6 mt-3">
+                  <form [formGroup]="MonthForm" class="form-row d-flex align-items-center">
+                    <div class="card">
+                      <div class="d-flex align-items-center justify-content-between">
+                        <h3 class="mb-0">Inventory Status by Disb-Month-wise</h3>
+                        <input type="text" formControlName="fromMonth" placeholder="Select Year & Month"
+                          class="form-control form-control-sm" bsDatepicker
+                          [bsConfig]="{ isAnimated: true, containerClass: 'theme-red', dateInputFormat: 'MM/YYYY', minMode: 'month' }"
+                          [maxDate]="selectedMonth" (bsValueChange)="MonthYearFilter()"
+                          style="width: 130px; font-size: 11px; box-shadow: none !important; margin-right: 20px;" />
+                      </div>
+                      <div id="MissingChart"></div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-pane fade" id="documentControl">
+              <div class="row d-flex align-items-center">
+                <!-- Period Dropdown -->
+                <div class="col-md-2">
+                  <div class="box_heanding">
+                    <select [(ngModel)]="selectedPeriodRetrieval" placeholder="Select"
+                      (change)="FilterDataRetrieval($event.target.value)" class="form-control"
+                      style="box-shadow: none; font-size: 10px;">
+                      <!-- <option value="">Select a period</option> -->
+                      <option *ngFor="let option of periodOptions" [value]="option.value" style="border-radius: 20px;">
+                        {{ option.label }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-md-6 d-flex align-items-center">
+                  <!-- Date Picker Form -->
+                  <form [formGroup]="ContentSearchForm" class="form-row d-flex align-items-center">
+                    <!-- From Date -->
+                    <div class="col-md-4">
+                      <input type="text" formControlName="fromdateretrieval" placeholder="From Date"
+                        class="form-control" bsDatepicker [bsConfig]="{ isAnimated: true, containerClass: 'theme-red' }"
+                        [maxDate]="currentDate" [readOnly]="!dateselection"
+                        style="box-shadow: none !important; box-shadow: none; font-size: 11px;" />
+                    </div>
+
+                    <!-- To Date -->
+                    <div class="col-md-4">
+                      <input type="text" formControlName="todateretrieval" placeholder="To Date" class="form-control"
+                        bsDatepicker [bsConfig]="{ isAnimated: true, containerClass: 'theme-red' }"
+                        [minDate]="ContentSearchForm.get('fromdateretrieval')?.value" [maxDate]="currentDate"
+                        [readOnly]="!dateselection"
+                        style="box-shadow: none !important; box-shadow: none; box-shadow: inset; font-size: 11px;" />
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="col-md-3 d-flex">
+                      <button class="btn btn-primary" title="Search" [disabled]="!dateselection"
+                        (click)="searchDataRetrieval()">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                      </button>
+                      <button class="btn btn-primary" title="Refresh" (click)="refreshPage()">
+                        Refresh
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="box">
+                    <div class="heading blue_box">Retrieval Request</div>
+                    <div class="box_cantent">
+                      <p (click)="callFuntion(1, InwardFormPopup)">
+                        # File Retrieval Request <span>{{ data10 }}</span>
+                      </p>
+                      <p (click)="callFuntion(2, InwardFormPopup)">
+                        # File Retrieval Dispatched <span>{{ data11 }}</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="box">
+                    <div class="heading bg-danger">Approval/Reject Request</div>
+                    <div class="box_cantent">
+                      <p (click)="callFuntion(3, InwardFormPopup)">
+                        # Approved Files <span>{{ data12 }}</span>
+                      </p>
+                      <p (click)="callFuntion(4, InwardFormPopup)">
+                        # Rejected Files <span>{{ data13 }}</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="box">
+                    <div class="heading green_box">Refilling Request</div>
+                    <div class="box_cantent">
+                      <p (click)="callFuntion(5, InwardFormPopup)">
+                        # of Files Refilling Request
+                        <span>{{ data15 }}</span>
+                      </p>
+                      <p (click)="callFuntion(6, InwardFormPopup)">
+                        # of Files Refilling Ack
+                        <span>{{ data16 }}</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="card">
+                    <h3>Retrieval Request</h3>
+                    <div id="ocrStatusChart"></div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card">
+                    <h3>Request Approval & Reject Request</h3>
+                    <div id="ocrStatusChart1"></div>
+                  </div>
+                </div>
+                <div class="col-md-6 mt-3">
+                  <div class="card">
+                    <h3>Refilling Request</h3>
+                    <div id="RefillingRequest"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #InwardFormPopup let-c="close" let-d="dismiss" let-modal>
+      <div class="modal-content">
+        <div class="modal-body p-0">
+          <div class="pt-2 pl-3">
+            <h2 style="border-bottom: 1px solid black">Dashboard</h2>
+          </div>
+
+          <div class="m-2 p-3">
+            <form>
+              <div>
+                <p-table [paginator]="true" [rows]="10" [value]="formattedData1" [autoLayout]="true"
+                  [showCurrentPageReport]="true" [rowsPerPageOptions]="[10, 25, 50, 100]" [(first)]="first1"
+                  (onPage)="paginate1($event)" [loading]="loading1"
+                  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+                  <ng-template pTemplate="caption">
+                    <i class="pi pi-search" style="margin: 4px 4px 0 0"></i>
+                    <input type="text" pInputText size="50" class="form-control" placeholder="Search records"
+                      (input)="searchTable1($event)" class="global-search search" />
+                  </ng-template>
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th *ngFor="let col of headerList1; let i = index" [ngStyle]="i == 0 && { width: '5%' }">
+                        {{ col.header }}
+                      </th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-car let-rowIndex="rowIndex">
+                    <tr>
+                      <td *ngFor="let col of headerList1">
+                        {{ car[col.field] }}
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+
+              <div class="d-flex justify-content-end py-2">
+                <button type="button" style="padding: 0 0 5px 4px" class="btn btn-sm text-success"
+                  style="background-color: white; border: 1px solid black" (click)="onUpdatestatus()">
+                  Close
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+</div>

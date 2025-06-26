@@ -1,0 +1,330 @@
+<div class="header pb-6">
+  <div class="container-fluid">
+    <div class=" header-body">
+      <div class=" row align-items-center py-4">
+        <div class=" col-lg-6 col-7">
+          <!-- <h6 class=" h2 text-white d-inline-block mb-0">Users</h6> -->
+
+          <nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
+            <ol class=" breadcrumb breadcrumb-links">
+              <li class=" breadcrumb-item">
+                <a href="javascript:void(0)"> <i class=" fas fa-home"> </i> </a>
+              </li>
+
+              <li class=" breadcrumb-item">
+                <a href="javascript:void(0)"> User Management </a>
+              </li>
+
+              <li aria-current="page" class=" breadcrumb-item active">
+                Create User
+              </li>
+            </ol>
+          </nav>
+        </div>
+
+        <div class=" col-lg-6 col-5 text-right">
+          <a class=" btn btn-sm btn-neutral" (click)="addUser(userFormPopup)"> Create New User</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class=" container-fluid mt--6">
+  <div class=" row">
+    <div class=" col">
+      <div class=" card">
+        <div class="dataTables_wrapper checklist-table w-100">
+
+          <p-table [paginator]="true" [rows]="10" [value]="formattedData" [autoLayout]="true"
+            [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50,100]" [(first)]="first"
+            (onPage)="paginate($event)" [loading]="loading"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+            <ng-template pTemplate="caption">
+              <input type="text" pInputText size="50" placeholder="Search records" (input)="searchTable($event)"
+                class="global-search search">
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+
+                <th *ngFor="let col of headerList; let i = index;" [ngStyle]="i==0 && {'width': '5%'}">
+                  {{col.header}}
+                  <p-sortIcon *ngIf="i==10" [field]="col.field"></p-sortIcon>
+                </th>
+                <th style="width: 10%;">
+                  ACTION
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-car let-rowIndex="rowIndex">
+              <tr>
+
+                <td *ngFor="let col of headerList">
+                  {{car[col.field]}}
+                </td>
+                <td>
+                  <button type="button" style="padding:0 0 5px 4px" class="btn btn-icon btn-icon-only"
+                    (click)="editEmployee(userFormPopup,car)">
+                    <span class="btn-inner--icon"><i class="fa fa-pen"></i></span>
+                  </button>
+                  <button type="button" style="padding:0 0 5px 1px" class="btn btn-icon btn-icon-only"
+                    (click)="deleteEmployee(car)">
+                    <span class="btn-inner--icon"><img src="assets/img/icons/delete.svg"></span>
+                  </button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+
+
+        </div>
+
+        <!-- <div class="dataTables_wrapper py-4">
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <div class="dataTables_length" id="datatable_length">
+                <label>
+                  Show
+                  <select
+                    name="datatable_length"
+                    aria-controls="datatable"
+                    class="form-control form-control-sm"
+                    (change)="entriesChange($event)"
+                  >
+                    <option value="10" [selected]="entries == 10">10</option>
+                    <option value="25" [selected]="entries == 25">25</option>
+                    <option value="50" [selected]="entries == 50">50</option>
+                    <option value="-1" [selected]="entries == -1">All</option>
+                  </select>
+                  entries
+                </label>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div id="datatable_filter" class="dataTables_filter">
+                <label>
+                  <input
+                    type="search"
+                    class="form-control form-control-sm"
+                    placeholder="Search records"
+                    aria-controls="datatable"
+                    (keyup)="filterTable($event)"
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <ngx-datatable
+            class="material"
+            [columnMode]="'force'"
+            [headerHeight]="50"
+            [footerHeight]="50"
+            [rowHeight]="'auto'"
+            [limit]="entries != -1 ? entries : undefined"
+            [rows]="_FilteredList"
+            (activate)="onActivate($event)"
+          >
+            <ngx-datatable-column name="SrNo">
+              <ng-template let-rowIndex="rowIndex" ngx-datatable-cell-template>{{rowIndex+1}}</ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="ś">Name</ngx-datatable-column>
+            <ngx-datatable-column name="userid">User ID</ngx-datatable-column>
+            <ngx-datatable-column name="email">Email</ngx-datatable-column>
+            <ngx-datatable-column name="mobile">Mobile</ngx-datatable-column>
+            <ngx-datatable-column name="roleName">Role</ngx-datatable-column>
+            <ngx-datatable-column name="Action" sortable="false" prop="id">
+              <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                <button type="button" style="padding:0 0 5px 4px" class="btn btn-icon btn-warning btn-icon-only rounded-circle" (click)="editEmployee(userFormPopup,value)">
+                  <span class="btn-inner--icon"><i class="fa fa-edit"></i></span>
+                </button>
+                <button type="button" style="padding:0 0 5px 1px" class="btn btn-icon btn-icon-only rounded-circle" (click)="deleteEmployee(value)">
+                  <span class="btn-inner--icon"><img src="assets/img/icons/delete.svg"></span>
+                </button>
+          </ng-template>
+            </ngx-datatable-column>
+          </ngx-datatable>
+        </div> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #userFormPopup let-c="close" let-d="dismiss" let-modal>
+  <div class="modal-content">
+    <div class="modal-body p-0">
+      <div class=" card">
+        <div class=" card-header">
+          <h3 class=" mb-0"> {{User}}</h3>
+        </div>
+
+        <div class="card-body">
+          <form class="needs-validation" novalidate="" [formGroup]="AddUserForm" (ngSubmit)="onSubmit()">
+            <div class="form-row">
+              <div class="col-md-12 mb-3">
+                <label class="form-control-label" for="name">
+                  Name
+                </label>
+                <input class="form-control" name="name" id="name" formControlName="name" placeholder="Name"
+                  type="text" />
+
+                <div class="errorMsg-feedback" *ngIf="f.name.touched && f.name.invalid && f.name.errors.required">
+                  Required</div>
+
+                <div style="margin-top: .25rem;" class="alert alert-danger"
+                  *ngIf="f.name.touched && f.name.invalid && f.name.errors.required">Name is required</div>
+
+
+
+              </div>
+            </div>
+            <div class="form-row">
+              <div class=" col-md-6 mb-3">
+                <label class=" form-control-label" for="userid">
+                  User Id
+                </label>
+                <input name="userid" id="userid" formControlName="userid" placeholder="User Id" type="text"
+                  class="form-control"
+                  [ngClass]="{'is-invalid': f['userid'].invalid && (f['userid'].touched || submitted)}"
+                  [readonly]="AddUserForm.get('id').value" />
+                <div *ngIf="f['userid'].invalid && (f['userid'].touched || submitted)" class="invalid-feedback">
+                  <div *ngIf="f['userid'].hasError('required')">* Required.</div>
+                  <div *ngIf="f['userid'].hasError('maxlength')">* UserID must be under 20 character.</div>
+                  <div *ngIf="f['userid'].hasError('minlength')">* UserID must be minimum 5 character.</div>
+                  <!-- <div  class="errorMsg-feedback" *ngIf="f.userid.touched && f.userid.hasError('maxLength')">UserID must be under 20 character</div> -->
+                </div>
+                <!-- <div  class="errorMsg-feedback" *ngIf="f.userid.touched && f.userid.hasError('required')">Required</div> -->
+
+              </div>
+
+              <div class=" col-md-6 mb-3">
+                <label class=" form-control-label" for="email">
+                  Email
+                </label>
+
+                <input id="email" formControlName="email" placeholder="Email" type="email" class="form-control" />
+                <div class="errorMsg-feedback" *ngIf="f.email.touched && f.email.hasError('required')">Email Id Required
+                </div>
+                <div class="errorMsg-feedback" *ngIf="f.email.touched && f.email.errors?.pattern">Please Enter Valid
+                  Email Id</div>
+              </div>
+            </div>
+
+            <div class=" form-row">
+              <div class=" col-md-6 mb-3">
+                <label class=" form-control-label" for="loginPass">
+                  Password
+                </label>
+                <input name="pwd" id="loginPass" formControlName="pwd" required minlength="12" placeholder="Password"
+                  type="text" class="form-control">
+                <div class="errorMsg-feedback" *ngIf="f.pwd.touched && f.pwd.hasError('required')">Password Required
+                </div>
+                <div class="errorMsg-feedback" *ngIf="f.pwd.touched && f.pwd.errors">Password should meet the following
+                  criteria:
+                  <ul>
+                    <li>Contain at least 12 characters</li>
+                    <li>Contain at least 1 special character</li>
+                    <li>Contain at least 1 number</li>
+                    <li>Contain at least 1 lowercase character (a-z)</li>
+                    <li>Contain at least 1 uppercase character (A-Z)</li>
+                  </ul>
+                </div>
+                <!-- <div  class="errorMsg-feedback"
+                *ngIf="f.pwd.touched && f.pwd.errors &&f.pwd.errors.minlength">Password should be 6 character</div> -->
+              </div>
+              <div class=" col-md-6 mb-3">
+                <label class=" form-control-label" for="confirmPass">
+                  Confirm Password
+                </label>
+
+                <input name="confirmPass" id="confirmPass" formControlName="confirmPass" placeholder="Confirm Password"
+                  type="text" class="form-control">
+                <div class="errorMsg-feedback" *ngIf="f.confirmPass.touched && f.confirmPass.hasError('required')">
+                  Confirm Password Required</div>
+                <div class="errorMsg-feedback"
+                  *ngIf="f.confirmPass.touched && f.confirmPass.invalid && f.confirmPass.errors.confirmedValidator">
+                  Password and Confirm Password must be match.</div>
+
+              </div>
+            </div>
+            <div class=" form-row">
+              <div class=" col-md-6 mb-3">
+                <label class=" form-control-label" for="mobile">
+                  Mobile
+                </label>
+
+                <input name="mobile" id="mobile" maxlength="10" formControlName="mobile" placeholder="Mobile"
+                  type="number" class="form-control" />
+                <div class="errorMsg-feedback" *ngIf="f.mobile.touched && f.mobile.hasError('required')">Mobile No
+                  Required</div>
+                <div *ngIf="f['mobile'].hasError('maxlength')">* UserID must be under 20 character.</div>
+                <div *ngIf="f['mobile'].hasError('minlength')">* UserID must be minimum 5 character.</div>
+              </div>
+              <div class=" col-md-6 mb-3">
+                <label class=" form-control-label" for="sysRoleID">
+                  Role
+                </label>
+                <select class=" form-control" formControlName="sysRoleID" data-toggle="select" id="sysRoleID">
+                  <option value="0"> Select Role Name </option>
+                  <option *ngFor="let _Role of _RoleList" [value]="_Role.id">
+                    {{_Role.roleName}}
+                  </option>
+                </select>
+                <div class="errorMsg-feedback" *ngIf="f.sysRoleID.touched && f.sysRoleID.hasError('required')">Role
+                  Required</div>
+
+              </div>
+
+              <div class=" col-md-6 mb-3">
+                <div class="form-group">
+                  <label class="form-control-label" for="UserType">
+                    User Type
+                  </label>
+                  <select name="UserType" class="form-control" formControlName="UserType">
+                    <option value=0>Select </option>
+                    <option value="1">Admin</option>
+                    <option value="2">Crown User</option>
+                    <option value="3">Avanse User</option>
+                    <option value="4">Approval User</option>
+                  </select>
+                </div>
+              </div>
+
+
+              <!-- <div class=" col-md-6 mb-3">
+                <div class="form-group">
+                  <label class="form-control-label" for="AccountType">
+                    Account Type
+                  </label>
+                  <select name="AccountType" class="form-control" formControlName="AccountType">
+                    <option value=0>Select </option>
+                    <option value="1">Secured</option>
+                    <option value="2">Un Secured</option> 
+                    <option value="3">Both</option> 
+                    </select>
+                </div>
+              </div> -->
+
+            </div>
+            <!-- <div class=" form-row">
+              <div class=" col-md-12 mb-3">
+                <label class=" form-control-label" for="Remarks">
+                  Remarks
+                </label>
+
+                <input name="Remarks" id="Remarks" formControlName="Remarks" placeholder="Remarks" type="text" class="form-control"/>
+              </div>
+            </div> -->
+
+
+            <button class="btn btn-primary" type="submit">
+              Submit
+            </button>
+            <button type="button" class="btn btn-warning" (click)="OnClose()">Close</button>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

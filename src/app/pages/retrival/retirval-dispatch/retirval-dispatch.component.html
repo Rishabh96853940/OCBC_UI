@@ -1,0 +1,788 @@
+<div class="header pb-6">
+  <div class=" container-fluid">
+    <div class=" header-body">
+      <div class=" row align-items-center py-4">
+        <div class=" col-lg-6 col-7">
+          <nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
+            <ol class=" breadcrumb">
+              <li class=" breadcrumb-item">
+                <a href="javascript:void(0)"> <i class=" fas fa-home" routerLink="/search/quick-search"> </i> </a>
+              </li>
+              <li class=" breadcrumb-item">
+                <a href="javascript:void(0)"> Retrieval </a>
+              </li>
+              <li aria-current="page" class=" breadcrumb-item active">
+                Retrieval Dispatch
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class=" container-fluid mt--6">
+  <div class=" row">
+    <div class=" col">
+      <div class=" card">
+        <div class=" card-header">
+          <h3 class=" mb-0">Retrieval Dispatch
+          </h3>
+        </div>
+        <div class="dataTables_wrapper checklist-table w-100">
+
+          <p-table [paginator]="true" [rows]="10" [value]="formattedData" [autoLayout]="true"
+            [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50,100]" [(first)]="first"
+            (onPage)="paginate($event)" [loading]="loading" 
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+            <ng-template pTemplate="caption">
+              
+              <input type="text" pInputText size="50" placeholder="Search records" (input)="searchTable($event)"
+                class="global-search search">
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th *ngFor="let col of headerList; let i = index;" [ngStyle]="i==0 && {'width': '5%'}">
+                  {{col.header}}
+                </th>
+                <th style="width: 15%;">
+                  ACTION
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-car let-rowIndex="rowIndex">
+              <tr>
+                <td *ngFor="let col of headerList">
+                  <span *ngIf="car[col.field] !='Partically dispatch' && car[col.field] !='RETRIEVALrequest'">
+                    {{car[col.field]}}</span>
+                  <span style="background-color:rgb(15, 202, 30);"
+                    *ngIf="car[col.field] =='Partically dispatch'">{{car[col.field]}}</span>
+                  <span style="background-color:#c76262;"
+                    *ngIf="car[col.field] =='RETRIEVALrequest'">{{car[col.field]}}</span>
+
+                </td>
+
+                <td>
+
+                  <button type="button" style="padding:0 0 5px 1px" class="btn btn-icon btn-icon-only"
+                    title="Sent to dispatch"
+                    (click)="sendDispatch(car.retrival_type === 'Access' ? SendtodispatchAccessCopyFormPopup : SendtodispatchFormPopup, car)">
+                    <span class="btn-inner--icon"><i class="fa fa-plus"></i></span>
+                  </button>
+                  <!-- <button type="button" style="padding:0 0 5px 1px" class="btn btn-icon btn-icon-only" (click)="viewDispatchFile(dispatchViewPopup)">
+                            <span class="btn-inner--icon"><i class="fa fa-eye"></i></span>
+                          </button> -->
+                  <!-- <button type="button" style="padding:0 0 5px 1px" class="btn btn-icon btn-icon-only"  title="Download mail attachment" (click)="downloadAttachment(car)">
+                              <span class="btn-inner--icon"><i class="fa fa-download"></i></span>
+                          </button> -->
+                  <!-- <button type="button" style="padding:0 0 5px 1px" class="btn btn-icon btn-icon-only"  title="Download files" (click)="downloadlanfile(car)">
+                            <span class="btn-inner--icon"><i class="fa fa-file-download"></i></span>
+                        </button>
+                        <button type="button" style="padding:0 0 5px 1px" class="btn btn-icon btn-icon-only"  title="Scan copy upload" (click)="UplaodSoftcopyPopup(UplaodSoftcopyFormPopup,car)">
+                          <span class="btn-inner--icon"><i class="fa fa-file-upload"></i></span>
+                      </button> -->
+
+
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #dispatchFormPopup let-c="close" let-d="dismiss" let-modal>
+  <div class="modal-content">
+    <div class="modal-body p-0">
+      <div class=" card">
+        <div class=" card-header">
+          <h3 class=" mb-0">POD ENTRY</h3>
+        </div>
+
+        <div class="card-body">
+          <form class="needs-validation" novalidate="" [formGroup]="AddPODEntryForms" (ngSubmit)="onSubmit()">
+            <div class="form-row">
+
+              <div class="col-md-12 mb-3">
+                <label class="form-control-label" for="request_no">
+                  Request No
+                </label>
+                <input class="form-control" name="request_no" id="request_no" formControlName="request_no"
+                  placeholder="Request No" type="text" />
+                <div style="margin-top: .25rem;" class="alert alert-danger"
+                  *ngIf="f.request_no.touched && f.request_no.invalid && f.request_no.errors.required">Request No is
+                  required</div>
+              </div>
+              <div class="col-md-12 mb-3">
+                <label class="form-control-label" for="pod_number">
+                  POD NUMBER
+                </label>
+                <input class="form-control" name="pod_number" id="pod_number" formControlName="pod_number"
+                  placeholder="POD NUMBER" type="text" />
+                <div style="margin-top: .25rem;" class="alert alert-danger"
+                  *ngIf="f.pod_number.touched && f.pod_number.invalid && f.pod_number.errors.required">POD Number is
+                  required</div>
+              </div>
+              <div class="col-md-12 mb-3">
+                <label class="form-control-label" for="courier_name">
+                  COURIER NAME
+                </label>
+                <select name="courier_name" id="courier_name" class="form-control" formControlName="courier_name">
+                  <option value=0>Courier</option>
+                  <option value="1">DTDC</option>
+                  <option value="2">Blue Dart</option>
+                  <option value="3">FedEx Express</option>
+                  <option value="4">Professional Couriers</option>
+                  <option value="5">Aramex India</option>
+                  <option value="6">Delhivery</option>
+                  <option value="7">Ecom Express</option>
+                  <option value="8">Gati</option>
+                  <option value="9">Safe Express</option>
+                  <option value="10">InExpress</option>
+                  <option value="11">Day express Courier and cargo Services</option>
+                  <option value="12">Super Fast Llogistics</option>
+                  <option value="13">BLAZEFLASH COURIER</option>
+                  <option value="14">APEX INTERNATIONAL</option>
+                  <option value="15">BLUE EXPRESS COURIER</option>
+                  <option value="16">BOMBINO EXPRESS COURIER</option>
+
+                  <option value="17">DECAN DART EXPRESS</option>
+                  <option value="18">ELBEX COURIERS</option>
+                  <option value="19">FASTWAY EXPRESS</option>
+                  <option value="20">FIRST FLIGHT</option>
+
+                  <option value="21">FLYKING COURIER</option>
+                  <option value="22">FREIGHT NET PVT LTD</option>
+                  <option value="23">ICS INTERNATIONAL COURIER</option>
+                  <option value="24">INDIAN POSTAL SERVICE</option>
+
+                  <option value="25">KABLOOM COURIER</option>
+                  <option value="26">METRO MARUTI EXPRESS COURIER</option>
+
+                  <option value="27">ON TIME COURIER</option>
+                  <option value="28">OVERNITE EXPRESS</option>
+
+                  <option value="29">RAJDHANI AIR EXPRESS</option>
+                  <option value="30">RED EXPRESS</option>
+
+                  <option value="31">RELIABLE LOGISTICS</option>
+                  <option value="32">ROYALE INTERNATIONAL</option>
+
+                  <option value="33">SM LOGISTICS</option>
+                  <option value="34">SAFELINE LOGISTICS</option>
+
+                  <option value="35">SAFEXPRESS COURIER</option>
+                  <option value="36">SAR WORLDWIDE</option>
+
+                  <option value="37">SHREE BALAJI COURIER</option>
+                  <option value="38">SHREE MARUTI COURIER</option>
+                  <option value="39">SHREE TIRUPATI COURIER</option>
+                  <option value="40">SKYPACK COURIER</option>
+                  <option value="41">SPEEDWAY CARGO</option>
+                  <option value="42">ST COURIER</option>
+                  <option value="43">TARGET COURIERS</option>
+                  <option value="44">TCI XPS</option>
+                  <option value="45">TNT EXPRESS</option>
+                  <option value="46">UNIQUE EXPRESS</option>
+                  <option value="47">UNITED BUSINESS XPRESS (UBX)</option>
+                  <option value="48">UNITED FREIGHT SERVICE</option>
+                  <option value="49">UNITED PARCEL SERVICE</option>
+                  <option value="50">WORLDWIDE EXPRESS COURIERS</option>
+
+                  <option value="51">Other</option>
+                  <option value="52">By Hand</option>
+
+
+                </select>
+                <div style="margin-top: .25rem;" class="alert alert-danger"
+                  *ngIf="f.courier_name.touched && f.courier_name.invalid && f.courier_name.errors.required">Courier
+                  Name is required</div>
+              </div>
+
+              <div class=" col-md-12 mb-1">
+                <div class="form-group">
+                  <label class="form-control-label">Page Count</label>
+                  <input class="form-control" name="page_count" formControlName="page_count" placeholder="Page Count"
+                    type="text" />
+                </div>
+              </div>
+
+              <div class=" col-md-12 mb-1">
+                <div class="form-group">
+                  <label class="form-control-label" for="dispatch_address">Dispatch Address</label>
+                  <div class="input-group input-group-merge serchInput">
+                    <textarea readonly rows="5" class="form-control" formControlName="dispatch_address"
+                      placeholder="Dispatch Address"></textarea>
+
+                  </div>
+                </div>
+              </div>
+
+
+
+            </div>
+
+            <button class="btn btn-primary" [disabled]="!AddPODEntryForm.invalid" type="submit">
+              Submit
+            </button>
+            <button type="button" class="btn btn-warning" (click)="OnClose()">Close</button>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- <ng-template #dispatchViewPopup let-c="close" let-d="dismiss" let-modal>
+    <div class="modal-content">
+      <div class="modal-body p-0">
+        <div class=" card">
+          <div class=" card-header"><h3 class=" mb-0">View Retrieval Dispatch Files</h3></div>
+  
+          <div class="card-body">
+            <app-retrieval-details></app-retrieval-details>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+ -->
+
+
+<ng-template #SendtodispatchFormPopup let-c="close" let-d="dismiss" let-modal>
+
+  <div class="modal-content">
+    <div class="modal-body p-0">
+
+      <div>
+        <form [formGroup]="AddPODEntryForm">
+          <div class="row">
+            <div class="card w-100">
+
+              <div>
+                <div class="position-relative row form-group">
+
+                  <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12">
+                    <div class="card-header">
+                      <h3 class="mb-0">Send to Dispatch</h3>
+                      <p class="text-sm mb-0"></p>
+                    </div>
+                    <div class="card-body">
+                      <div class="">
+                        <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12">
+
+                          <div class="row">
+
+                            <div class="col-md-4">
+                              <div class="form-group">
+
+                                <label class="form-control-label" for="pod_number"> POD Number</label>
+                                <div class="">
+                                  <input type="text" placeholder="POD Number" class="form-control" name="pod_number"
+                                    formControlName="pod_number"
+                                    [ngClass]="{'is-invalid': f['pod_number'].invalid && (f['pod_number'].touched || submitted)}" />
+                                  <div *ngIf="f['pod_number'].invalid && (f['pod_number'].touched || submitted)"
+                                    class="invalid-feedback">
+                                    <div ngIf="f['pod_number'].hasError('pod_number')"> POD number is required.
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-4">
+                              <div class="form-group">
+                                <label class="form-control-label" for="courier_name">
+                                  Courier Name
+                                </label>
+                                <select name="courier_name" class="form-control" formControlName="courier_name">
+                                  <option value='' disabled selected>--Select Courier--</option>
+                                  <option value="1">DTDC</option>
+                                  <option value="2">Blue Dart</option>
+                                  <option value="3">FedEx Express</option>
+                                  <option value="4">Professional Couriers</option>
+                                  <option value="5">Aramex India</option>
+                                  <option value="6">Delhivery</option>
+                                  <option value="7">Ecom Express</option>
+                                  <option value="8">Gati</option>
+                                  <option value="9">Safe Express</option>
+                                  <option value="10">InExpress</option>
+                                  <option value="11">
+                                    Day express Courier and cargo Services
+                                  </option>
+                                  <option value="12">
+                                    Super Fast Llogistics
+                                  </option>
+                                  <option value="13">BLAZEFLASH COURIER</option>
+                                  <option value="14">APEX INTERNATIONAL</option>
+                                  <option value="15">BLUE EXPRESS COURIER</option>
+                                  <option value="16">
+                                    BOMBINO EXPRESS COURIER
+                                  </option>
+
+                                  <option value="17">DECAN DART EXPRESS</option>
+                                  <option value="18">ELBEX COURIERS</option>
+                                  <option value="19">FASTWAY EXPRESS</option>
+                                  <option value="20">FIRST FLIGHT</option>
+
+                                  <option value="21">FLYKING COURIER</option>
+                                  <option value="22">FREIGHT NET PVT LTD</option>
+                                  <option value="23">
+                                    ICS INTERNATIONAL COURIER
+                                  </option>
+                                  <option value="24">
+                                    INDIAN POSTAL SERVICE
+                                  </option>
+
+                                  <option value="25">KABLOOM COURIER</option>
+                                  <option value="26">
+                                    METRO MARUTI EXPRESS COURIER
+                                  </option>
+
+                                  <option value="27">ON TIME COURIER</option>
+                                  <option value="28">OVERNITE EXPRESS</option>
+
+                                  <option value="29">RAJDHANI AIR EXPRESS</option>
+                                  <option value="30">RED EXPRESS</option>
+
+                                  <option value="31">RELIABLE LOGISTICS</option>
+                                  <option value="32">ROYALE INTERNATIONAL</option>
+
+                                  <option value="33">SM LOGISTICS</option>
+                                  <option value="34">SAFELINE LOGISTICS</option>
+
+                                  <option value="35">SAFEXPRESS COURIER</option>
+                                  <option value="36">SAR WORLDWIDE</option>
+
+                                  <option value="37">SHREE BALAJI COURIER</option>
+                                  <option value="38">SHREE MARUTI COURIER</option>
+                                  <option value="39">
+                                    SHREE TIRUPATI COURIER
+                                  </option>
+                                  <option value="40">SKYPACK COURIER</option>
+                                  <option value="41">SPEEDWAY CARGO</option>
+                                  <option value="42">ST COURIER</option>
+                                  <option value="43">TARGET COURIERS</option>
+                                  <option value="44">TCI XPS</option>
+                                  <option value="45">TNT EXPRESS</option>
+                                  <option value="46">UNIQUE EXPRESS</option>
+                                  <option value="47">
+                                    UNITED BUSINESS XPRESS (UBX)
+                                  </option>
+                                  <option value="48">
+                                    UNITED FREIGHT SERVICE
+                                  </option>
+                                  <option value="49">
+                                    UNITED PARCEL SERVICE
+                                  </option>
+                                  <option value="50">
+                                    WORLDWIDE EXPRESS COURIERS
+                                  </option>
+
+                                  <option value="51">Other</option>
+                                  <option value="52">By Hand</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col-md-4">
+                              <div class="form-group">
+                                <label class="form-control-label" for="dispatch_address">Work Order Number</label>
+                                <div class="">
+                                  <input type="text" class="form-control" name="workorder_number"
+                                    formControlName="workorder_number" placeholder="Work Order Number"
+                                    [ngClass]="{'is-invalid': f['workorder_number'].invalid && (f['workorder_number'].touched || submitted)}" />
+                                  <div
+                                    *ngIf="f['workorder_number'].invalid && (f['workorder_number'].touched || submitted)"
+                                    class="invalid-feedback">
+                                    <div ngIf="f['workorder_number'].hasError('required')"> Work Order Number is
+                                      required.
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-4">
+                              <div class="form-group">
+                                <label class="form-control-label" for="dispatch_address">Dispatch Address</label>
+
+                                <div class="input-group input-group-merge serchInput">
+                                  <input readonly style="border-color: green;" type="text" class="form-control"
+                                    name="dispatch_address" formControlName="dispatch_address" />
+
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-4">
+                              <div class="form-group">
+                                <label class="form-control-label" for="dispatch_address"></label>
+
+                                <div class="form-group pt-2 mr-3" *ngIf="showBulkRequest">
+                                  <input type="file" class="form-control form-control-sm bg-light" name="csvReader"
+                                    id="csvReader" (change)="uploadListenerDispatch($event)" accept=".csv">
+                                  <button type="button" style="padding:0 0 6px 5px;" class="btn text-success h3"
+                                    (click)="downloadFileDispatchBulk()">
+                                    <i class="fa fa-download"></i>
+                                  </button>
+                                </div>
+
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="resetsave float-right">
+
+                            </div>
+                          </div>
+                          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="resetsave float-right">
+                              <div class="resetsavebts d-flex justify-content-end align-items-center">
+                                <button type="button" class="btn btn-danger" (click)="UPLOADDUMP()"
+                                  *ngIf="showBulkRequest">
+                                  Upload Dispatch &nbsp;<i class="fa-solid fa-upload"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger" (click)="toggleBulkRequest()"
+                                  *ngIf="!showBulkRequest">
+                                  Bulk Dispatch &nbsp;<i class="fa-solid fa-upload"></i>
+                                </button>
+                                <button class='btn btn-success mr-2' (click)="onSubmit('Normal')">Send to
+                                  dispatch</button>
+                                <button type="button" class="btn btn-warning" (click)="OnClose()">Close</button>
+                              </div>
+                              <div class="mt-2">
+                                <span class="selected-file-name"></span>
+                              </div>
+
+                            </div>
+                          </div>
+
+
+                        </div>
+                        <div class="dataTables_wrapper py-4 checklist-table">
+                          <p-table [paginator]="true" [rows]="10" [value]="formattedFileData" [autoLayout]="true"
+                            [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50,100]" [(fi)]="firstDispatch"
+                            (onPage)="paginateDispatch($event)" [loading]="loading"
+                            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+                            <ng-template pTemplate="caption">
+                              
+                              <input type="text" pInputText size="50" placeholder="Search records"
+                                (input)="searchTableDispatch($event)" class="global-search search">
+                              <!-- <button class='btn btn-danger mr-2' (click)="onSubmit1()">Download </button> -->
+                              <button type="button" style="margin:6px 5px;" class="btn text-success h3"
+                                (click)="onSubmit1()">
+                                <i class="fa fa-download" style="font-size: 18px;"></i>
+                              </button>
+                            </ng-template>
+                            <ng-template pTemplate="header">
+                              <tr>
+                                <th [style.width]="'35px'">
+                                  <p-checkbox (onChange)="selectAllRowDispatch($event)" #e></p-checkbox>
+                                </th>
+                                <th *ngFor="let col of headerListFile; let i = index;">
+                                  {{col.header}}
+
+                                </th>
+                              </tr>
+                            </ng-template>
+
+
+                            <ng-template #BranchFormPopup let-c="close" let-d="dismiss" let-modal>
+                              <div class="modal-content">
+                                <div class="modal-body p-0">
+                                  <div class=" card">
+                                    <div class=" card-header">
+                                      <h3 class=" mb-0">Bulk Upload</h3>
+                                    </div>
+
+                                    <div class="card-body">
+                                      <form>
+                                        <div class="row">
+                                          <div class="col">
+                                            <div class="form-group pt-2">
+                                              <input type="file" class="form-control form-control-sm bg-light"
+                                                name="csvReader" id="csvReader"
+                                                (change)="uploadListenerDispatch($event)" accept=".csv">
+                                              <span class="selected-file-name"></span>
+                                            </div>
+                                          </div>
+                                          <div class="col d-flex justify-content-center align-items-start pt-2"><button
+                                              class="btn btn-danger btn-sm" (click)="downloadFileDispatch()">Download
+                                              Csv Format</button></div>
+                                        </div>
+                                        <br>
+                                        <br>
+                                        <div class="d-flex align-items-end justify-content-end">
+                                          <button class="btn btn-primary" type="submit" (click)="uploadDispatch()">
+                                            Upload
+                                          </button>
+                                          <button type="button" class="btn btn-warning"
+                                            (click)="OnReset()">Close</button>
+                                        </div>
+
+                                      </form>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </ng-template>
+
+
+                            <ng-template pTemplate="body" let-car let-rowIndex="rowIndex">
+                              <tr>
+                                <td [style.width]="'35px'">
+                                  <p-checkbox [(ngModel)]="car.selected" [binary]="true"
+                                    [ngModelOptions]="{standalone: true}" (onChange)="selectRow($event, car)"
+                                    *ngIf="car.file_status !== 'File dispatch'"
+                                    #e></p-checkbox>
+                                </td>
+                                <td *ngFor="let col of headerListFile">
+                                  <span *ngIf="car[col.field] !='File dispatch' && car[col.field] !='RETRIEVALrequest'">
+                                    {{car[col.field]}}</span>
+                                  <span style="background-color:rgb(15, 202, 30);"
+                                    *ngIf="car[col.field] =='File dispatch'">{{car[col.field]}}</span>
+                                  <span style="background-color:#ca0f0f;"
+                                    *ngIf="car[col.field] =='RETRIEVALrequest'">{{car[col.field]}}</span>
+                                </td>
+                              </tr>
+                            </ng-template>
+                          </p-table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #UplaodSoftcopyFormPopup let-c="close" let-d="dismiss" let-modal>
+  <div class="modal-content">
+    <div class="modal-body p-0">
+      <div class=" card">
+        <div class=" card-header">
+          <h3 class=" mb-0">Upload Scan copy</h3>
+        </div>
+        <div class="card-body">
+          <form class="needs-validation" novalidate="" [formGroup]="AddSoftCopyForm">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label class="form-control-label" for="request_no"> Request No</label>
+                  <div class="input-group input-group-merge serchInput">
+                    <input readonly type="text" class="form-control" name="request_no" formControlName="request_no" />
+                  </div>
+                </div>
+              </div>
+
+              <div class=" col-md-12 mb-1">
+                <div class="form-group">
+                  <label class="form-control-label" for="dispatch_address">Upload scan attachment</label>
+                  <div class="custom-file" [readonly]="isReadonly">
+                    <input type="file" id="customFileUploadMultiple" multiple (change)="getFileDetails($event)">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-primary" type="submit" (click)="onUpdateRequestNo()">
+              Upload
+            </button>
+            <button type="button" class="btn btn-warning" (click)="OnClose()">Close</button>
+          </form>
+
+          <div class="dataTables_wrapper py-4 checklist-table">
+            <p-table [paginator]="true" [rows]="10" [value]="formattedSoftcopyFileData" [autoLayout]="true"
+              [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50,100]" [(first)]="first"
+              (onPage)="paginate($event)" [loading]="loading"
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+              <ng-template pTemplate="caption">
+                
+                <input type="text" pInputText size="50" placeholder="Search records" (input)="searchTable($event)"
+                  class="global-search search">
+              </ng-template>
+              <ng-template pTemplate="header">
+                <tr>
+                  <th *ngFor="let col of headerListSoftcopyFile; let i = index;" [ngStyle]="i==0">
+                    {{col.header}}
+
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-car let-rowIndex="rowIndex">
+                <tr>
+                  <td *ngFor="let col of headerListSoftcopyFile">
+                    <span *ngIf="car[col.field] !='File dispatch' && car[col.field] !='RETRIEVALrequest'">
+                      {{car[col.field]}}</span>
+                    <span style="background-color:rgb(15, 202, 30);"
+                      *ngIf="car[col.field] =='File dispatch'">{{car[col.field]}}</span>
+                    <span style="background-color:#ca0f0f;"
+                      *ngIf="car[col.field] =='RETRIEVALrequest'">{{car[col.field]}}</span>
+
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template #SendtodispatchAccessCopyFormPopup let-c="close" let-d="dismiss" let-modal>
+  <div class="modal-content">
+    <div class="modal-body p-0">
+      <div>
+        <form [formGroup]="AddPODEntryForm">
+          <div class="row">
+            <div class="card w-100">
+              <div>
+                <div class="position-relative row form-group">
+                  <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12">
+                    <div class="card-header">
+                      <h3 class="mb-0">Send to Dispatch</h3>
+                      <p class="text-sm mb-0"></p>
+                    </div>
+                    <div class="card-body">
+                      <div class="">
+                        <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12">
+                          <div class="row">
+                            <div class="col-md-4">
+                              <div class="form-group">
+                                <label class="form-control-label" for="pod_number">Email ID</label>
+                                <div class="">
+                                  <input type="text" placeholder="Enter Email ID" class="form-control" name="pod_number"
+                                    formControlName="pod_number"
+                                    [ngClass]="{'is-invalid': f['pod_number'].invalid && (f['pod_number'].touched || submitted)}" />
+                                  <div *ngIf="f['pod_number'].invalid && (f['pod_number'].touched || submitted)"
+                                    class="invalid-feedback">
+                                    <div ngIf="f['pod_number'].hasError('pod_number')"> Email ID is required.
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-4">
+                              <div class="form-group">
+                                <label class="form-control-label" for="dispatch_address">Work Order Number</label>
+                                <div class="">
+                                  <input type="text" class="form-control" name="workorder_number"
+                                    formControlName="workorder_number" placeholder="Work Order Number"
+                                    [ngClass]="{'is-invalid': f['workorder_number'].invalid && (f['workorder_number'].touched || submitted)}" />
+                                  <div
+                                    *ngIf="f['workorder_number'].invalid && (f['workorder_number'].touched || submitted)"
+                                    class="invalid-feedback">
+                                    <div ngIf="f['workorder_number'].hasError('required')"> Work Order Number is
+                                      required.
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-4" *ngIf="deliverytypeforaccess === 'SOD' ? true : false">
+                              <div class="form-group">
+                                <label class="form-control-label">Page Count</label>
+                                <input class="form-control" name="page_count" formControlName="page_count"
+                                  placeholder="Page Count" type="number" />
+                              </div>
+                            </div>
+                            <div class="col-md-4">
+                              <div class="form-group">
+                                <label class="form-control-label" for="dispatch_address"></label>
+                                <div class="form-group pt-2 mr-3" *ngIf="showBulkRequest">
+                                  <input type="file" class="form-control form-control-sm bg-light" name="csvReader"
+                                    id="csvReader" (change)="uploadListenerDispatch($event)" accept=".csv">
+                                  <button type="button" style="padding:0 0 6px 5px;" class="btn text-success h3"
+                                    (click)="downloadFileDispatchBulk()">
+                                    <i class="fa fa-download"></i>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="resetsave float-right">
+                              <div class="resetsavebts">
+                                <button type="button" class="btn btn-danger" (click)="UPLOADDUMP()"
+                                  *ngIf="showBulkRequest">
+                                  Upload Dispatch &nbsp;<i class="fa-solid fa-upload"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger" (click)="toggleBulkRequest()"
+                                  *ngIf="!showBulkRequest">
+                                  Bulk Dispatch
+                                </button>
+                                <button class='btn btn-success' (click)="onSubmit('Access')">
+                                  Send to dispatch
+                                </button>
+                                <button type="button" class="btn btn-warning" (click)="OnClose()">Close</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="dataTables_wrapper py-4 checklist-table">
+                          <p-table [paginator]="true" [rows]="10" [value]="formattedFileData" [autoLayout]="true"
+                            [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50,100]"
+                            [(firstAccess)]="firstAccess" (onPage)="paginateAccess($event)" [loading]="loading"
+                            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+                            <ng-template pTemplate="caption">
+                              
+                              <input type="text" pInputText size="50" placeholder="Search records"
+                                (input)="searchTableDispatch($event)" class="global-search search">
+                              <button type="button" style="margin:6px 5px;" class="btn text-success h3"
+                                (click)="onSubmit1()">
+                                <i class="fa fa-download" style="font-size: 18px;"></i>
+                              </button>
+                            </ng-template>
+                            <ng-template pTemplate="header">
+                              <tr>
+                                <th [style.width]="'35px'">
+                                  <p-checkbox (onChange)="selectAllRow($event)" #e></p-checkbox>
+                                </th>
+                                <th *ngFor="let col of headerListFile; let i = index;">
+                                  {{col.header}}
+
+                                </th>
+                              </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-car let-rowIndex="rowIndex">
+                              <tr>
+                                <td [style.width]="'35px'">
+                                  <p-checkbox [(ngModel)]="car.selected" [binary]="true"
+                                    [ngModelOptions]="{standalone: true}" (onChange)="selectRow($event, car)" 
+                                    *ngIf="car.file_status !== 'File dispatch'"
+                                    #e></p-checkbox>
+                                </td>
+                                <td *ngFor="let col of headerListFile">
+                                  <span *ngIf="car[col.field] !='File dispatch' && car[col.field] !='RETRIEVALrequest'">
+                                    {{car[col.field]}}</span>
+                                  <span style="background-color:rgb(15, 202, 30);"
+                                    *ngIf="car[col.field] =='File dispatch'">{{car[col.field]}}</span>
+                                  <span style="background-color:#ca0f0f;"
+                                    *ngIf="car[col.field] =='RETRIEVALrequest'">{{car[col.field]}}</span>
+                                </td>
+                              </tr>
+                            </ng-template>
+                          </p-table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-template>
